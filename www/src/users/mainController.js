@@ -17,6 +17,68 @@ var app = angular.module("users")
     $scope.receiverAddress = '';
     $scope.notifications = [];
 
+    function storeNotification(title){
+      var tempArray = $scope.notifications.slice();
+      $scope.notifications.length = 0;
+      $scope.notifications.push(title);
+      for(var i = 0 ; i<tempArray.length ; i++){
+        $scope.notifications.push(tempArray[i]);
+      }
+    }
+
+    // $ionicPlatform.on("resume", function(){
+       setTimeout(function() {
+         var push = PushNotification.init({
+         android: {
+             senderID: "911672082483",
+             vibrate: "true",
+             sound: 'true'
+         },
+         browser: {
+             pushServiceURL: 'http://push.api.phonegap.com/v1/push'
+         },
+         windows: {}
+         });
+         push.on('registration', function(data) {
+        console.log(data.registrationId);
+        // alert('registered');
+        });
+
+        push.on('notification', function(data) {
+          console.log(data);
+          var response = {
+            'name':'Tahiri',
+            'title':'Entertainment',
+            'action':'wants to play.',
+            'message':'I wanna play tic tac toe.'
+          }
+          console.log(response);
+          storeNotification(response);
+          // this.push.rx.notification()
+          // .subscribe((data) => {
+          //   alert('hey' + ': ' + 'hey');
+          // });
+        });
+       }, 5000);
+
+
+    // });
+
+    // $ionicPlatform.ready(function() {
+    //   var push = PushNotification.init({
+    //   android: {
+    //       senderID: "911672082483",
+    //       vibrate: "true",
+    //       sound: 'true'
+    //   },
+    //   browser: {
+    //       pushServiceURL: 'http://push.api.phonegap.com/v1/push'
+    //   },
+    //   windows: {}
+    //   });
+    // });
+
+
     $scope.route = function(path){
         $location.path(path);
     }
@@ -33,14 +95,7 @@ var app = angular.module("users")
         setTimeout(function(){ $scope.loading = false; }, 3000);
     }
 
-    function storeNotification(title){
-      var tempArray = $scope.notifications.slice();
-      $scope.notifications.length = 0;
-      $scope.notifications.push(title);
-      for(var i = 0 ; i<tempArray.length ; i++){
-        $scope.notifications.push(tempArray[i]);
-      }
-    }
+
 
     function removeNotification(index){
       var tempArray = $scope.notifications.slice();

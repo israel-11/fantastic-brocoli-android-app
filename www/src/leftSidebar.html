@@ -18,9 +18,9 @@
         </md-card>
         <h3 class="text-center">Notifications</h3>
         <md-list-item ng-repeat="notification in notifications track by $index" layout="row">
-            <md-button ng-click="openAlert($index,'Tahiri','Quiero jugar tic tac toe.')" layout="row">
+            <md-button ng-click="openAlert($index,notification.name,'notification.message')" layout="row">
                 <p class="fa fa-bell fa-lg" flex="20" data-toggle="modal"></p>
-                <p flex="80" data-toggle="modal">{{notification}}</p>
+                <p flex="80" data-toggle="modal">{{notification.title}}</p>
             </md-button>
         </md-list-item>
     </md-list>
