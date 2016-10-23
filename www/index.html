@@ -1,177 +1,148 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" >
   <head>
+    <title>Dictio</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    <title>DB</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
 
-    <link rel="manifest" href="manifest.json">
-
-    <!-- un-comment this code to enable service worker
-    <script>
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('service-worker.js')
-          .then(() => console.log('service worker installed'))
-          .catch(err => console.log('Error', err));
-      }
-    </script>-->
-
-    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto%3A400%2C500%2C700%2C400italic">
-    <link rel="stylesheet" href="node_modules/angular-material/angular-material.css">
-    <link rel="stylesheet" href="assets/app.css">
+      <style>
+          html, body {
+          height: 100%;
+          margin: 0;
+          padding: 0;
+          }
+          #map {
+          height: 100%;
+          }
+      </style>
+      <script src="socket.io.js"></script>
+      <script>
+        // Tell Socket.IO where to find the Flash component if the browser needs it.
+        WEB_SOCKET_SWF_LOCATION = 'http://localhost/socket.io/WebSocketMain.swf';
+      </script>
+    <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic'>
+    <link rel='stylesheet' href='bower_components/bootstrap-sweetalert/dist/sweetalert.css'>
+    <link rel="stylesheet" href="../node_modules/angular-material/angular-material.css"/>
+    <link rel="stylesheet" href="assets/app.css"/>
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" type="text/css">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/material.css">
 
+    <script rel='stylesheet' src='bower_components/bootstrap-sweetalert/dist/sweetalert.js'></script>
     <script src="bower_components/cropper/cropper.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
 
+
     <style type="text/css">
-      /**
-      * Hide when Angular is not yet loaded and initialized
-      */
-      [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
-      display: none !important;
-      }
+        /**
+         * Hide when Angular is not yet loaded and initialized
+         */
+        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+          display: none !important;
+        }
     </style>
-
-    <!--<link href="lib/ionic/css/ionic.css" rel="stylesheet">-->
-    <!--<link href="css/style.css" rel="stylesheet">-->
-
-    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
-    <link href="css/ionic.app.css" rel="stylesheet">
-    -->
-
-    <!-- ionic/angularjs js -->
-    <script src="lib/ionic/js/ionic.bundle.js"></script>
-
-    <!-- cordova script (this will be a 404 during development) -->
-    <script src="cordova.js"></script>
-
-    <!-- your app's js -->
-    <script src="js/app.js"></script>
   </head>
-  <body ng-app="starter" layout="column" ng-controller="UserController as user" ng-cloak="">
 
-    <navbar></navbar>
-    <div flex="" layout="row">
+  <body style="overflow-x:hidden;" ng-app="myApp" layout="column" ng-controller="MainController as user" ng-cloak>
+  <navbar ng-hide="isNavBarHide()"></navbar>
+    <div style="width:100%; height:100%;" flex layout="row">
       <left-sidebar></left-sidebar>
 
-      <md-content style="position:relative;" flex="100" id="main-content">
-        <div style="background-color:#F3E5F5;" ng-view=""> </div>
+      <md-content style="position:relative; overflow-x:hidden; width:100%; height:100%;" flex="100" id="main-content">
+        <div style="width:100%; height:50%;" ng-view> </div>
+        <div id="publisher" style="margin-top:-40%; height:30%; border:1px solid black;"></div>
+        <script src="https://static.opentok.com/v2/js/opentok.js" charset="utf-8"></script>
+        <script charset="utf-8">
+          var apiKey = '45706852';
+          var sessionId = '1_MX40NTcwNjg1Mn5-MTQ3NzE3NDYzNTQ0N35DMTY4c1ViUVh6b2VkbExSUjdCQmNyVm1-fg';
+          var token = 'T1==cGFydG5lcl9pZD00NTcwNjg1MiZzaWc9OTkxOWU1Y2E1YWQyMDJiZDY0N2EyNGQ0ZDNhMmVhMzZiOWUyNmQ5NjpzZXNzaW9uX2lkPTFfTVg0ME5UY3dOamcxTW41LU1UUTNOekUzTkRZek5UUTBOMzVETVRZNGMxVmlVVmg2YjJWa2JFeFNVamRDUW1OeVZtMS1mZyZjcmVhdGVfdGltZT0xNDc3MTc4NTM2Jm5vbmNlPTAuMTIzMTA0NDYxOTM0NDE3NDkmcm9sZT1wdWJsaXNoZXImZXhwaXJlX3RpbWU9MTQ3NzI2NDkzNQ==';
+          var session = OT.initSession(apiKey, sessionId)
+          .on('streamCreated', function(event) {
+            session.subscribe(event.stream, 'subscriber', {
+              insertMode: 'append',
+              width: '100%',
+              height: '100%'
+            });
+          })
+          .connect(token, function(error) {
+            var publisher = OT.initPublisher('publisher', {
+              insertMode: 'append',
+              width: '100%',
+              height: '100%'
+            });
+            session.publish(publisher);
+          });
+        </script>
+
 
       </md-content>
-
     </div>
 
-    <!-- First Time User Log In Modal -->
-    <div ng-controller="submitController" class="modal fade" id="loginModal" role="dialog">
-      <div class="modal-dialog">
-        <!-- Modal content-->
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h3 class="modal-title text-center">Hi {{name}} {{lastName}}, Welcome to #YoNoMeCuelgo</h3>
-          </div>
-          <div class="modal-body">
-            <md-input-container class="md-icon-float md-block">
-              <label>Name</label>
-              <md-icon class="fa fa-user"></md-icon>
-              <input ng-model="name" type="text">
-            </md-input-container>
-            <h4 style="padding-left:5%;">Profile Image</h4>
-            <form class="row" id="form2" runat="server">
-              <input style="visibility:hidden;" type="file" name="file" id="profileImage">
-              <div style="color:gray;" class="col-lg-4 col-md-4 col-lg-push-1 col-md-push-1" id="profileFeedback">Select a .jpg format image.</div>
-              <label style="margin-top: -1%;" class="btn btn-info col-lg-4 col-md-4 col-lg-push-2 col-md-push-2" for="profileImage">Choose an Image</label>
-            </form>
-            <searchbar ng-controller="ContactChipDemoCtrl"></searchbar>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button ng-click="submitInfo()" data-dismiss="modal" class="btn btn-success">Submit</button>
-          </div>
-        </div>
-      </div>
+    <!-- <h1>Socket.IO Demo</h1> -->
+
+    <!-- A log for messages -->
+    <!-- <div id="messages" style="border: 1px solid #000; width: 100%; color: #0F0; background: #000; font-family: monospace;">
+      Connecting to server...<br/>
     </div>
 
-    <!-- Tutor Profile Modals -->
-    <div ng-controller="coursesController">
-      <div ng-repeat="tutor in tutorsList" class="modal fade" id="tutor-profile-{{tutor.firstName}}{{tutor.lastName}}" role="dialog">
-        <div class="modal-dialog">
-          <div class="modal-body">
-            <section style="margin-top:33%;" class="card">
-              <figure class="panel meta">
-                <picture>
-                  <img class="avatar" ng-src="{{tutor.picture}}" width="128" height="128">
-                  <img class="company-logo" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/67516/b-01.png" alt="BigglesCodes" width="40" height="40">
-                </picture>
-                <figcaption>
+    <div id="colorsquare" style="border: 1px solid #000; width: 32px; height: 32px; background: #F00; margin-top: 10px;"></div>
 
-                  <h1 class="name">{{tutor.firstName}} {{tutor.lastName}}</h1>
-                  <h3 class="title">El Tutorazo</h3>
-                </figcaption>
-              </figure>
+    <script>
+      // Make the output visible
+      var messages = document.getElementById('messages');
 
-              <div class="panel info">
-                <dl class="skillz">
-                  <dt>ICOM4009</dt>
-                  <dd>98</dd>
-                  <dt>ICOM5016</dt>
-                  <dd>86</dd>
-                  <dt>ICOM4035</dt>
-                  <dd>28</dd>
-                  <dt>ICOM4075</dt>
-                  <dd>32</dd>
-                </dl>
+      // Connect to our app.js, which is listeninging on port 1080
+      // var socket = io.connect('https://fast-taiga-91272.herokuapp.com:3000');
+      var socket = io('https://fast-taiga-91272.herokuapp.com:3000');
+      socket.on('news', function (data) {
+      console.log(data);
+      socket.emit('my other event', { my: 'data' });
+      });
+      socket.on('connect',
+        function() {
+          messages.innerHTML += 'Connected<br/>';
+        });
 
-                <ul class="social">
-                  <li><a class="fa fa-phone" href="">Phone</a></li>
-                  <li><a class="fa fa-envelope" href="">Gmail</a></li>
-                  <li><a class="fa fa-facebook" href="">Facebook</a></li>
-                  <li><a class="fa fa-twitter" href="">Twitter</a></li>
-                  <li><a class="fa fa-linkedin" href="">LinkedIn</a></li>
-                </ul>
+      socket.on('myMessageType',
+         function(data) {
+           messages.innerHTML += 'Server says: "' + data.toString() + '"<br/>';
 
-              </div>
+           // Respond to the server
+           socket.emit('myResponseType', { my: 'data' });
+        });
 
-            </section></div>
-          <!--&lt;!&ndash; Modal content&ndash;&gt;-->
-          <script>
-                $('.info dd').each(function() {  $(this).css({width: $(this).text()+'%'});});
-            </script>
-          <link rel="stylesheet" href="assets/tutors.css">
-
-        </div>
-      </div>
-    </div>
-
+      socket.on('colorMessage',
+         function(data) {
+            document.getElementById('colorsquare').style.background = data.color;
+         });
+    </script> -->
   </body>
-  <script src="node_modules/angular/angular.js"></script>
-  <script src="node_modules/angular-animate/angular-animate.js"></script>
-  <script src="node_modules/angular-aria/angular-aria.js"></script>
-  <script src="node_modules/angular/spin.js"></script>
+
+  <script src="../node_modules/angular/angular.js"></script>
+  <script src="../node_modules/angular-animate/angular-animate.js"></script>
+  <script src="../node_modules/angular-aria/angular-aria.js"></script>
+  <script src="../node_modules/angular/spin.js"></script>
   <script type="text/javascript" src="../node_modules/angular-material/angular-material.js"></script>
   <script src="./src/users/Users.js"></script>
-  <script src="./src/users/UserController.js"></script>
+  <script src="./src/users/mainController.js"></script>
+  <script src="./src/services/service.js"></script>
   <script src="./src/users/UserService.js"></script>
   <script src="./src/userProvider.js"></script>
   <script src="./src/leftSidebarDirective.js"></script>
   <script src="./src/navBarDirective.js"></script>
   <script src="bower_components/angular-route/angular-route.js"></script>
-  <script src="src/login/submitController.js"></script>
-  <script src="src/courses/controller/coursesController.js"></script>
-  <script src="src/search%20bar/controller/searchBarController.js"></script>
-  <script src="src/search%20bar/directive/searchBarDirective.js"></script>
-
-
+  <script src="bower_components/jquery.countdown/dist/jquery.countdown.js"></script>
+  <script src="../node_modules/angular-messages/angular-messages.min.js"></script>
+  <script src="http://ngmaterial.assets.s3.amazonaws.com/svg-assets-cache.js"></script>
   <script type="text/javascript">
 
           angular
-              .module('starter', ['ngMaterial', 'users'])
+              .module('myApp', ['ngMaterial', 'users'])
               .config(function($mdThemingProvider, $mdIconProvider){
 
                   $mdIconProvider
@@ -184,11 +155,12 @@
                       .icon("phone"      , "./assets/svg/phone.svg"       , 512);
 
                       $mdThemingProvider.theme('default')
-                          .primaryPalette('blue')
-                          .accentPalette('red');
+                          .primaryPalette('orange')
+                          .accentPalette('green');
 
               });
 
   </script>
+
 
 </html>
